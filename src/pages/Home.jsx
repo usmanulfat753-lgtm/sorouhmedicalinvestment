@@ -32,44 +32,46 @@ const GALLERY_IMAGES = [
 
 const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
   const featuredServices = servicesData.slice(0, 6)
 
+  // ── Auto-change every 1.5 seconds ──
   useEffect(() => {
-    if (isPaused) return
     const interval = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
     }, 1500)
     return () => clearInterval(interval)
-  }, [isPaused])
+  }, [])
 
   const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
   const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)
 
   return (
     <div>
-      {/* HERO SLIDER */}
-      <section
-        className="relative min-h-[600px] md:min-h-[700px] overflow-hidden bg-primary-950"
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-      >
-        <AnimatePresence mode="sync">
-          <motion.div
-            key={currentSlide}
-            initial={{ opacity: 0, scale: 1.1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 1.05 }}
-            transition={{ duration: 1.2, ease: 'easeInOut' }}
-            className="absolute inset-0"
-          >
-            <img src={HERO_SLIDES[currentSlide].image} alt={HERO_SLIDES[currentSlide].title} className="w-full h-full object-cover" />
-          </motion.div>
-        </AnimatePresence>
+      {/* ═══════════════════════════════════════════════════════
+         HERO SLIDER — Auto 1.5s
+         ═══════════════════════════════════════════════════════ */}
+      <section className="relative min-h-[600px] md:min-h-[700px] overflow-hidden bg-primary-950">
+        {/* Background Image Slider */}
+        <div className="absolute inset-0">
+          <AnimatePresence initial={false} mode="popLayout">
+            <motion.img
+              key={currentSlide}
+              src={HERO_SLIDES[currentSlide].image}
+              alt={HERO_SLIDES[currentSlide].title}
+              initial={{ opacity: 0, scale: 1.05 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.8, ease: 'easeInOut' }}
+              className="absolute inset-0 w-full h-full object-cover"
+            />
+          </AnimatePresence>
+        </div>
 
+        {/* Overlays for readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-primary-950/95 via-primary-950/70 to-primary-950/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-primary-950/20" />
 
+        {/* Content */}
         <div className="container-custom mx-auto px-4 py-20 md:py-28 relative z-10">
           <div className="max-w-3xl">
             <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm font-semibold text-white mb-6">
@@ -77,8 +79,15 @@ const Home = () => {
               Biomedical • IT • Electrical • Calibration
             </motion.span>
 
+            {/* Dynamic Text for slides */}
             <AnimatePresence mode="wait">
-              <motion.div key={currentSlide} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }}>
+              <motion.div
+                key={currentSlide}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.4 }}
+              >
                 <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4">
                   {HERO_SLIDES[currentSlide].title}
                 </h1>
@@ -100,36 +109,24 @@ const Home = () => {
                 <FaPlay className="text-xs" /> Get a Quote
               </Link>
             </div>
-
-            <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-accent-400 border-2 border-white/60 flex items-center justify-center text-white font-bold text-xs">
-                    {String.fromCharCode(64 + i)}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <div className="flex items-center gap-1 text-yellow-400 mb-0.5">
-                  {[1, 2, 3, 4, 5].map((i) => <FaStar key={i} className="text-xs" />)}
-                </div>
-                <p className="text-white/80 text-xs">Trusted by 50+ institutions</p>
-              </div>
-            </div>
           </div>
         </div>
 
+        {/* Slide Indicators */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
           {HERO_SLIDES.map((_, i) => (
             <button key={i} onClick={() => setCurrentSlide(i)} className={`h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-10 bg-accent-400' : 'w-2 bg-white/40 hover:bg-white/70'}`} />
           ))}
         </div>
 
+        {/* Manual Controls */}
         <button onClick={prevSlide} className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 flex items-center justify-center text-white transition z-20"><FaChevronLeft /></button>
         <button onClick={nextSlide} className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 flex items-center justify-center text-white transition z-20"><FaChevronRight /></button>
       </section>
 
-      {/* GALLERY */}
+      {/* ═══════════════════════════════════════════════════════
+         SCROLLING GALLERY
+         ═══════════════════════════════════════════════════════ */}
       <section className="py-12 md:py-16 bg-white border-b border-gray-100 overflow-hidden">
         <div className="container-custom mx-auto px-4 mb-8">
           <div className="text-center">
@@ -242,11 +239,8 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════
-         TESTIMONIALS SECTION — Dark Blue Background (UPDATED)
-         ═══════════════════════════════════════════════════════ */}
+      {/* TESTIMONIALS (Dark Blue) */}
       <section className="section-padding bg-navy-950 relative overflow-hidden">
-        {/* Background glows */}
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
         <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-[120px] pointer-events-none" />
 

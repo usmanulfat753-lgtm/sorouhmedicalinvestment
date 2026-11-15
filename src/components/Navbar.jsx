@@ -4,10 +4,10 @@ import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   FaBars, FaTimes, FaPhone, FaEnvelope, FaSearch,
-  FaChevronDown, FaMapMarkerAlt, FaClock, FaGlobe,
+  FaChevronDown, FaMapMarkerAlt, FaClock, FaGlobe, FaStar,
 } from 'react-icons/fa'
 import SearchBar from './SearchBar'
-import logo from '../assets/logo.jpg' // CHANGE TO .svg IF YOUR LOGO IS SVG
+import logo from '../assets/logo.png' // CHANGE TO .svg IF YOUR LOGO IS SVG
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
@@ -66,13 +66,12 @@ const Navbar = () => {
   return (
     <>
       {/* ═══════════════════════════════════════════════════════
-         TOP BAR — Location, Hours, Contact
+         TOP BAR
          ═══════════════════════════════════════════════════════ */}
       <div className="hidden lg:block bg-navy-950 text-white text-xs relative overflow-hidden border-b border-white/5">
         <div className="absolute inset-0 bg-gradient-to-r from-primary-600/10 via-transparent to-accent-500/10 pointer-events-none" />
         <div className="container-custom mx-auto px-4 py-2.5 flex justify-between items-center relative z-10">
           
-          {/* Left: Contact Info */}
           <div className="flex items-center gap-6">
             <a href="tel:+966594946392" className="flex items-center gap-2 text-gray-300 hover:text-accent-300 transition group">
               <FaPhone className="text-accent-400 group-hover:scale-125 transition-transform text-[10px]" />
@@ -90,7 +89,6 @@ const Navbar = () => {
             </div>
           </div>
 
-          {/* Right: Hours + Status */}
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 text-gray-300">
               <FaClock className="text-accent-400 text-[10px]" />
@@ -107,7 +105,7 @@ const Navbar = () => {
       </div>
 
       {/* ═══════════════════════════════════════════════════════
-         MAIN NAVBAR
+         MAIN NAVBAR — With Enhanced Logo Design
          ═══════════════════════════════════════════════════════ */}
       <motion.nav
         initial={{ y: -100 }}
@@ -122,24 +120,43 @@ const Navbar = () => {
         <div className="container-custom mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
 
-            {/* 3D Logo */}
+            {/* ═══ NEW ENHANCED LOGO ═══ */}
             <Link to="/" className="flex items-center gap-3 group flex-shrink-0 perspective-1000">
+              {/* Logo Image Box with 3D glow */}
               <motion.div
                 whileHover={{ rotateY: 180, scale: 1.1 }}
                 transition={{ duration: 0.6 }}
-                className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white p-1 shadow-lg shadow-primary-500/20 flex items-center justify-center border border-white/20"
+                className="relative w-11 h-11 md:w-14 md:h-14 rounded-2xl bg-white p-1.5 shadow-lg shadow-primary-500/20 flex items-center justify-center border border-white/20"
               >
-                <img src={logo} alt="Sorouh Medical Investment" className="w-full h-full object-contain" />
+                {/* Glowing outer ring */}
+                <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-primary-400 via-accent-400 to-primary-400 opacity-40 blur-sm group-hover:opacity-70 transition-opacity duration-500" />
+                {/* The logo itself */}
+                <img src={logo} alt="Sorouh Investment Medical" className="w-full h-full object-contain relative z-10" />
+                {/* Badge: Small star indicator */}
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white shadow-md border-2 border-white text-[8px] z-20">
+                  <FaStar />
+                </span>
               </motion.div>
-              <div className="hidden sm:block">
-                <h1 className="font-display font-bold text-lg md:text-xl text-white leading-tight">
-                  Sorouh <span className="bg-gradient-to-r from-primary-300 to-accent-300 bg-clip-text text-transparent">Medical</span>
+
+              {/* Brand Text */}
+              <div className="hidden sm:flex flex-col">
+                <h1 className="font-display font-bold text-base md:text-xl text-white leading-tight tracking-tight">
+                  Sorouh{' '}
+                  <span className="bg-gradient-to-r from-primary-300 via-white to-accent-300 bg-clip-text text-transparent">
+                    Investment
+                  </span>{' '}
+                  <span className="text-accent-300">Medical</span>
                 </h1>
-                <p className="text-[10px] md:text-xs text-primary-300 font-medium tracking-wider uppercase">Investment</p>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <div className="h-px w-6 bg-gradient-to-r from-primary-400 to-transparent" />
+                  <p className="text-[10px] md:text-[11px] text-primary-300 font-medium tracking-wider uppercase">
+                    Expert Care • Trusted Service
+                  </p>
+                </div>
               </div>
             </Link>
 
-            {/* Desktop Nav Links */}
+            {/* ═══ Desktop Nav Links ═══ */}
             <div className="hidden xl:flex items-center gap-1">
               {navLinks.map((link) => (
                 <NavLink
@@ -194,7 +211,7 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Right Actions */}
+            {/* ═══ Right Actions ═══ */}
             <div className="flex items-center gap-3">
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
@@ -237,7 +254,7 @@ const Navbar = () => {
       </motion.nav>
 
       {/* ═══════════════════════════════════════════════════════
-         MOBILE MENU
+         MOBILE MENU — Also shows the new brand name
          ═══════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {isOpen && (
@@ -255,6 +272,17 @@ const Navbar = () => {
                 <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 transition">
                   <FaTimes />
                 </button>
+              </div>
+
+              {/* Brand in mobile menu */}
+              <div className="p-4 border-b border-white/10 flex items-center gap-3 bg-navy-950/50">
+                <div className="w-10 h-10 rounded-xl bg-white p-1 shadow-lg border border-white/20">
+                  <img src={logo} alt="Sorouh Investment Medical" className="w-full h-full object-contain" />
+                </div>
+                <div>
+                  <p className="font-bold text-white text-sm">Sorouh <span className="text-accent-300">Investment</span> Medical</p>
+                  <p className="text-[10px] text-primary-400 uppercase tracking-wider">Expert Care • Trusted Service</p>
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 space-y-2">
@@ -297,5 +325,4 @@ const Navbar = () => {
     </>
   )
 }
-
 export default Navbar

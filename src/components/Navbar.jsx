@@ -1,15 +1,35 @@
+// src/components/Navbar.jsx
 import { useState, useEffect } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { FaBars, FaTimes, FaPhone, FaEnvelope, FaSearch } from 'react-icons/fa'
+import {
+  FaBars, FaTimes, FaPhone, FaEnvelope, FaSearch,
+  FaChevronDown, FaMapMarkerAlt, FaClock, FaGlobe,
+} from 'react-icons/fa'
 import SearchBar from './SearchBar'
-import logo from '../assets/logo.jpg'
+import logo from '../assets/logo.jpg' // CHANGE TO .svg IF YOUR LOGO IS SVG
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [showSearch, setShowSearch] = useState(false)
+  const [openDropdown, setOpenDropdown] = useState(null)
   const location = useLocation()
+
+  const navLinks = [
+    { path: '/', label: 'Home' },
+    { path: '/about', label: 'About Us' },
+    { path: '/services', label: 'Services' },
+    { path: '/team', label: 'Team' },
+    { path: '/partners', label: 'Partners' },
+    { path: '/contact', label: 'Contact' },
+    { path: '/careers', label: 'Careers' },
+  ]
+
+  const moreLinks = [
+    { path: '/blog', label: 'Blog & News' },
+    { path: '/faq', label: 'FAQ' },
+  ]
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20)
@@ -20,6 +40,7 @@ const Navbar = () => {
   useEffect(() => {
     setIsOpen(false)
     setShowSearch(false)
+    setOpenDropdown(null)
   }, [location])
 
   useEffect(() => {
@@ -27,107 +48,175 @@ const Navbar = () => {
     return () => { document.body.style.overflow = 'unset' }
   }, [isOpen])
 
-  const navLinks = [
-    { path: '/', label: 'Home' },
-    { path: '/about', label: 'About' },
-    { path: '/services', label: 'Services' },
-    { path: '/careers', label: 'Careers' },
-    { path: '/contact', label: 'Contact' },
-  ]
+  useEffect(() => {
+    const onKey = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault()
+        setShowSearch((s) => !s)
+      }
+      if (e.key === 'Escape') {
+        setShowSearch(false)
+        setOpenDropdown(null)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   return (
     <>
-      <div className="hidden lg:block bg-gradient-to-r from-primary-950 via-primary-900 to-accent-950 text-white text-sm relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_50%,rgba(11,192,148,0.15),transparent)]" />
-        <div className="container-custom mx-auto px-4 py-2 flex justify-between items-center relative">
+      {/* ═══════════════════════════════════════════════════════
+         TOP BAR — Location, Hours, Contact
+         ═══════════════════════════════════════════════════════ */}
+      <div className="hidden lg:block bg-navy-950 text-white text-xs relative overflow-hidden border-b border-white/5">
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-600/10 via-transparent to-accent-500/10 pointer-events-none" />
+        <div className="container-custom mx-auto px-4 py-2.5 flex justify-between items-center relative z-10">
+          
+          {/* Left: Contact Info */}
           <div className="flex items-center gap-6">
-            <a href="tel:+966594946392" className="flex items-center gap-2 hover:text-accent-300 transition group">
-              <FaPhone className="text-accent-400 group-hover:scale-125 transition-transform" /> +966 594946392
+            <a href="tel:+966594946392" className="flex items-center gap-2 text-gray-300 hover:text-accent-300 transition group">
+              <FaPhone className="text-accent-400 group-hover:scale-125 transition-transform text-[10px]" />
+              <span>+966 594946392</span>
             </a>
-            <a href="mailto:info@sorouhmedical.com" className="flex items-center gap-2 hover:text-accent-300 transition group">
-              <FaEnvelope className="text-accent-400 group-hover:scale-125 transition-transform" /> info@sorouhmedical.com
+            <span className="w-px h-3 bg-white/10" />
+            <a href="mailto:info@sorouhmedical.com" className="flex items-center gap-2 text-gray-300 hover:text-accent-300 transition group">
+              <FaEnvelope className="text-accent-400 group-hover:scale-125 transition-transform text-[10px]" />
+              <span>info@sorouhmedical.com</span>
             </a>
+            <span className="w-px h-3 bg-white/10" />
+            <div className="flex items-center gap-2 text-gray-300">
+              <FaMapMarkerAlt className="text-accent-400 text-[10px]" />
+              <span>Taif City, Saudi Arabia</span>
+            </div>
           </div>
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" /> Available 24/7
-            </span>
+
+          {/* Right: Hours + Status */}
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2 text-gray-300">
+              <FaClock className="text-accent-400 text-[10px]" />
+              <span>Sun - Thu: 8AM - 5PM</span>
+            </div>
+            <span className="w-px h-3 bg-white/10" />
+            <div className="flex items-center gap-2 text-gray-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span>Available 24/7</span>
+            </div>
           </div>
+
         </div>
       </div>
 
+      {/* ═══════════════════════════════════════════════════════
+         MAIN NAVBAR
+         ═══════════════════════════════════════════════════════ */}
       <motion.nav
         initial={{ y: -100 }}
         animate={{ y: 0 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
         className={`sticky top-0 z-50 transition-all duration-500 ${
-          scrolled 
-            ? 'bg-white/90 backdrop-blur-xl shadow-lg shadow-primary-900/5 py-2' 
-            : 'bg-white/95 backdrop-blur-sm py-3 md:py-4'
+          scrolled
+            ? 'bg-navy-950/80 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.3)] py-2 border-b border-white/5'
+            : 'bg-navy-950/60 backdrop-blur-md py-4 border-b border-white/5'
         }`}
       >
         <div className="container-custom mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center">
-            <Link to="/" className="flex items-center gap-3 group flex-shrink-0">
-              <motion.div whileHover={{ rotate: 360, scale: 1.1 }} transition={{ duration: 0.6 }}>
-                <img
-                  src={logo}
-                  alt="Sorouh Medical Investment"
-                  className="h-10 md:h-12 w-auto object-contain"
-                />
+
+            {/* 3D Logo */}
+            <Link to="/" className="flex items-center gap-3 group flex-shrink-0 perspective-1000">
+              <motion.div
+                whileHover={{ rotateY: 180, scale: 1.1 }}
+                transition={{ duration: 0.6 }}
+                className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-white p-1 shadow-lg shadow-primary-500/20 flex items-center justify-center border border-white/20"
+              >
+                <img src={logo} alt="Sorouh Medical Investment" className="w-full h-full object-contain" />
               </motion.div>
-              <div className="hidden xs:block">
-                <h1 className="font-display font-bold text-base md:text-xl text-primary-950 leading-tight">
-                  Sorouh <span className="gradient-text">Medical</span>
+              <div className="hidden sm:block">
+                <h1 className="font-display font-bold text-lg md:text-xl text-white leading-tight">
+                  Sorouh <span className="bg-gradient-to-r from-primary-300 to-accent-300 bg-clip-text text-transparent">Medical</span>
                 </h1>
-                <p className="text-[10px] md:text-xs text-gray-500 font-medium tracking-wider uppercase">Investment</p>
+                <p className="text-[10px] md:text-xs text-primary-300 font-medium tracking-wider uppercase">Investment</p>
               </div>
             </Link>
 
-            <div className="hidden lg:flex items-center gap-1">
+            {/* Desktop Nav Links */}
+            <div className="hidden xl:flex items-center gap-1">
               {navLinks.map((link) => (
                 <NavLink
                   key={link.path}
                   to={link.path}
                   className={({ isActive }) =>
-                    `relative px-4 py-2 rounded-lg font-medium transition-all duration-300 group ${
-                      isActive ? 'text-primary-700' : 'text-gray-700 hover:text-primary-700'
+                    `relative px-4 py-2 rounded-xl font-medium text-sm transition-all duration-300 group ${
+                      isActive ? 'text-white bg-white/10 shadow-inner shadow-white/5' : 'text-gray-300 hover:text-white hover:bg-white/5'
                     }`
                   }
                 >
                   {({ isActive }) => (
                     <>
                       <span className="relative z-10">{link.label}</span>
-                      {isActive && (
-                        <motion.div
-                          layoutId="activeNav"
-                          className="absolute inset-0 bg-primary-50 rounded-lg -z-0"
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-                        />
-                      )}
-                      <span className="absolute bottom-1 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-primary-500 to-accent-500 group-hover:w-8 transition-all duration-300 rounded-full" />
+                      <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-[2px] rounded-full bg-gradient-to-r from-primary-400 to-accent-400 transition-all duration-300 ${isActive ? 'w-8' : 'w-0 group-hover:w-8'}`} />
                     </>
                   )}
                 </NavLink>
               ))}
+
+              {/* More Dropdown */}
+              <div className="relative" onMouseEnter={() => setOpenDropdown('more')} onMouseLeave={() => setOpenDropdown(null)}>
+                <button className="px-4 py-2 rounded-xl font-medium text-sm text-gray-300 hover:text-white hover:bg-white/5 flex items-center gap-1.5 transition group">
+                  More
+                  <FaChevronDown className={`text-[10px] transition-transform duration-300 ${openDropdown === 'more' ? 'rotate-180 text-accent-400' : 'text-gray-400'}`} />
+                </button>
+                <AnimatePresence>
+                  {openDropdown === 'more' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-0 mt-2 w-48 bg-navy-900/95 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl py-2 overflow-hidden"
+                    >
+                      {moreLinks.map((link) => (
+                        <NavLink
+                          key={link.path}
+                          to={link.path}
+                          className={({ isActive }) =>
+                            `block px-4 py-3 text-sm font-medium transition-all ${
+                              isActive ? 'bg-white/10 text-accent-300 border-l-2 border-accent-400' : 'text-gray-300 hover:bg-white/5 hover:text-white hover:pl-5'
+                            }`
+                          }
+                        >
+                          {link.label}
+                        </NavLink>
+                      ))}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2 md:gap-3">
+            {/* Right Actions */}
+            <div className="flex items-center gap-3">
               <motion.button
                 whileHover={{ scale: 1.1, rotate: 90 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setShowSearch(!showSearch)}
-                className="w-10 h-10 rounded-full bg-gray-100 hover:bg-primary-100 flex items-center justify-center text-gray-700 hover:text-primary-700 transition"
+                className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-gray-300 hover:text-accent-400 transition shadow-inner"
                 aria-label="Search"
               >
                 <FaSearch className="text-sm" />
               </motion.button>
-              <Link to="/contact" className="hidden md:inline-flex btn-primary text-sm !py-2.5 !px-5">
-                <span>Get in Touch</span>
+
+              <Link
+                to="/contact"
+                className="hidden md:inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-primary-600 to-accent-600 text-white text-sm font-semibold shadow-lg shadow-primary-500/30 hover:shadow-primary-500/50 hover:-translate-y-0.5 transition-all"
+              >
+                Get in Touch
               </Link>
+
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden w-10 h-10 rounded-full bg-gradient-to-br from-primary-600 to-accent-600 text-white flex items-center justify-center shadow-lg"
+                className="xl:hidden w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white hover:bg-white/10 transition"
                 aria-label="Menu"
               >
                 {isOpen ? <FaTimes /> : <FaBars />}
@@ -137,13 +226,8 @@ const Navbar = () => {
 
           <AnimatePresence>
             {showSearch && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="py-4">
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="overflow-hidden">
+                <div className="py-4 border-t border-white/10 mt-3">
                   <SearchBar />
                 </div>
               </motion.div>
@@ -152,61 +236,57 @@ const Navbar = () => {
         </div>
       </motion.nav>
 
-      {/* Mobile Menu Fullscreen */}
+      {/* ═══════════════════════════════════════════════════════
+         MOBILE MENU
+         ═══════════════════════════════════════════════════════ */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 lg:hidden"
-          >
-            <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" onClick={() => setIsOpen(false)} />
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed inset-0 z-[60] xl:hidden">
+            <div className="absolute inset-0 bg-navy-950/90 backdrop-blur-md" onClick={() => setIsOpen(false)} />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-white shadow-2xl"
+              className="absolute right-0 top-0 bottom-0 w-[85%] max-w-sm bg-navy-900 border-l border-white/10 shadow-2xl flex flex-col"
             >
-              <div className="flex flex-col h-full">
-                <div className="p-6 border-b border-gray-100">
-                  <h2 className="text-xl font-bold text-primary-950">Menu</h2>
-                </div>
-                <div className="flex-1 overflow-y-auto p-6 space-y-2">
-                  {navLinks.map((link, i) => (
-                    <motion.div
-                      key={link.path}
-                      initial={{ opacity: 0, x: 30 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.05 + 0.1 }}
+              <div className="p-6 border-b border-white/10 flex items-center justify-between">
+                <h2 className="text-xl font-bold text-white">Menu</h2>
+                <button onClick={() => setIsOpen(false)} className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center text-gray-300 hover:text-white hover:bg-white/10 transition">
+                  <FaTimes />
+                </button>
+              </div>
+
+              <div className="flex-1 overflow-y-auto p-6 space-y-2">
+                {[...navLinks, ...moreLinks].map((link, i) => (
+                  <motion.div key={link.path} initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 + 0.1 }}>
+                    <NavLink
+                      to={link.path}
+                      className={({ isActive }) =>
+                        `block px-4 py-3.5 rounded-xl font-semibold transition-all ${
+                          isActive ? 'text-white bg-gradient-to-r from-primary-600 to-accent-600 shadow-lg shadow-primary-500/20' : 'text-gray-300 hover:bg-white/5 hover:text-white hover:pl-6'
+                        }`
+                      }
                     >
-                      <NavLink
-                        to={link.path}
-                        className={({ isActive }) =>
-                          `block px-4 py-4 rounded-xl font-semibold text-lg transition ${
-                            isActive
-                              ? 'text-white bg-gradient-to-r from-primary-600 to-accent-600 shadow-lg'
-                              : 'text-gray-700 hover:bg-gray-50'
-                          }`
-                        }
-                      >
-                        {link.label}
-                      </NavLink>
-                    </motion.div>
-                  ))}
-                </div>
-                <div className="p-6 border-t border-gray-100 space-y-3">
-                  <Link to="/contact" className="btn-primary w-full justify-center">
-                    Get in Touch
-                  </Link>
-                  <div className="pt-3 space-y-2 text-sm text-gray-600">
-                    <a href="tel:+966594946392" className="flex items-center gap-2 hover:text-primary-600">
-                      <FaPhone className="text-accent-500" /> +966 594946392
-                    </a>
-                    <a href="mailto:info@sorouhmedical.com" className="flex items-center gap-2 hover:text-primary-600">
-                      <FaEnvelope className="text-accent-500" /> info@sorouhmedical.com
-                    </a>
+                      {link.label}
+                    </NavLink>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="p-6 border-t border-white/10 space-y-4 bg-navy-950">
+                <Link to="/contact" onClick={() => setIsOpen(false)} className="w-full flex items-center justify-center gap-2 px-6 py-3.5 bg-gradient-to-r from-primary-600 to-accent-600 text-white font-semibold rounded-xl shadow-lg transition">
+                  Get in Touch
+                </Link>
+                <div className="space-y-2 text-sm text-gray-400 pt-2">
+                  <a href="tel:+966594946392" className="flex items-center gap-3 hover:text-white transition">
+                    <FaPhone className="text-accent-500" /> +966 594946392
+                  </a>
+                  <a href="mailto:info@sorouhmedical.com" className="flex items-center gap-3 hover:text-white transition">
+                    <FaEnvelope className="text-accent-500" /> info@sorouhmedical.com
+                  </a>
+                  <div className="flex items-center gap-3">
+                    <FaMapMarkerAlt className="text-accent-500" /> Taif City, Saudi Arabia
                   </div>
                 </div>
               </div>

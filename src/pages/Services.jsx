@@ -1,82 +1,88 @@
-import { motion } from 'framer-motion'
-import { FaHospital, FaUniversity, FaNetworkWired, FaVideo, FaUsers, FaTools, FaArrowRight, FaCheckCircle } from 'react-icons/fa'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import AnimatedBackground from '../components/AnimatedBackground'
-import SectionReveal from '../components/SectionReveal'
-import TiltCard from '../components/TiltCard'
+import { FaArrowRight, FaSearch } from 'react-icons/fa'
+import { servicesData, serviceCategories } from '../data/services'
 
 const Services = () => {
-  const services = [
-    { icon: FaHospital, title: 'Hospital Biomedical Maintenance', desc: 'Comprehensive preventive and corrective maintenance for all hospital biomedical equipment.', features: ['Patient monitors & ventilators', 'Imaging & diagnostic systems', 'Calibration & safety testing', '24/7 emergency breakdown support'], color: 'from-blue-500 to-cyan-500' },
-    { icon: FaUniversity, title: 'University Equipment Maintenance', desc: 'Scheduled maintenance for university laboratory, research, and educational biomedical equipment.', features: ['Lab analyzer maintenance', 'Teaching equipment servicing', 'Preventive maintenance contracts', 'Calibration certificates'], color: 'from-purple-500 to-pink-500' },
-    { icon: FaNetworkWired, title: 'IT & Network Support', desc: 'End-to-end IT infrastructure support for healthcare and educational institutions.', features: ['Network setup & structured cabling', 'Servers, Wi-Fi & security systems', 'Remote & on-site troubleshooting', 'IT asset management'], color: 'from-emerald-500 to-teal-500' },
-    { icon: FaVideo, title: 'Projector Repair Services', desc: 'Diagnostic, repair, and preventive maintenance for multimedia and lecture hall projectors.', features: ['Lamp & lens replacement', 'Optical & electronic repair', 'On-site servicing', 'Maintenance contracts'], color: 'from-orange-500 to-red-500' },
-    { icon: FaUsers, title: 'Manpower Supply', desc: 'Qualified technical and administrative manpower supply for short- and long-term engagements.', features: ['Biomedical engineers & technicians', 'IT & network technicians', 'Maintenance staff', 'Rapid deployment on demand'], color: 'from-indigo-500 to-blue-500' },
-    { icon: FaTools, title: 'Technical Consulting', desc: 'Expert consultancy for equipment planning, procurement, installation, and lifecycle management.', features: ['Equipment procurement planning', 'Installation & commissioning', 'Lifecycle & replacement planning', 'Compliance & safety audits'], color: 'from-pink-500 to-rose-500' },
-  ]
+  const [filter, setFilter] = useState('All')
+  const [search, setSearch] = useState('')
+
+  const filtered = servicesData.filter((s) => {
+    const matchCat = filter === 'All' || s.category === filter
+    const matchSearch = s.title.toLowerCase().includes(search.toLowerCase())
+    return matchCat && matchSearch
+  })
 
   return (
-    <div className="overflow-hidden">
-      <section className="bg-gradient-to-br from-primary-950 via-primary-900 to-accent-950 text-white py-16 md:py-24 relative overflow-hidden">
-        <AnimatedBackground variant="secondary" />
-        <div className="container-custom mx-auto px-4 text-center relative">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}>
-            <span className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur rounded-full text-sm font-semibold mb-4">
-              <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" /> What We Offer
-            </span>
-            <h1 className="text-4xl md:text-6xl font-bold mb-4">
-              Our <span className="bg-gradient-to-r from-accent-300 to-white bg-clip-text text-transparent">Services</span>
-            </h1>
-            <p className="text-primary-200 text-base md:text-lg max-w-2xl mx-auto">
-              Biomedical maintenance for hospitals and universities, IT & network support, projector repair, and professional manpower supply.
-            </p>
-          </motion.div>
+    <div>
+      <section className="bg-gradient-to-br from-primary-950 to-primary-800 text-white py-16 md:py-24">
+        <div className="container-custom mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-4">Our Services</h1>
+          <p className="text-primary-200 text-lg max-w-2xl mx-auto">
+            Complete biomedical, IT, electrical, calibration, and mechanical services.
+          </p>
         </div>
       </section>
 
-      <section className="section-padding relative">
+      <section className="py-12 bg-gray-50">
         <div className="container-custom mx-auto px-4">
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-8">
-            {services.map((service, i) => (
-              <SectionReveal key={i} delay={i * 0.08}>
-                <TiltCard>
-                  <div className="group relative bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full overflow-hidden">
-                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.color} opacity-10 rounded-full blur-2xl group-hover:opacity-30 transition-opacity`} />
-                    <div className={`w-14 md:w-16 h-14 md:h-16 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center text-white text-xl md:text-2xl mb-5 md:mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-lg`}>
-                      <service.icon />
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold text-primary-950 mb-3">{service.title}</h3>
-                    <p className="text-sm md:text-base text-gray-600 mb-5 leading-relaxed">{service.desc}</p>
-                    <ul className="space-y-2 mb-6">
-                      {service.features.map((f, j) => (
-                        <li key={j} className="flex items-start gap-2 text-xs md:text-sm text-gray-700">
-                          <FaCheckCircle className="text-accent-500 flex-shrink-0 mt-0.5" /> {f}
-                        </li>
-                      ))}
-                    </ul>
-                    <Link to="/contact" className="inline-flex items-center gap-2 text-primary-600 font-semibold text-sm group-hover:gap-3 transition-all">
-                      Request Service <FaArrowRight />
-                    </Link>
-                  </div>
-                </TiltCard>
-              </SectionReveal>
+          <div className="max-w-xl mx-auto mb-6">
+            <div className="relative">
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search services..."
+                className="w-full pl-12 pr-4 py-3 rounded-xl border border-gray-200 focus:border-primary-500 focus:ring-2 focus:ring-primary-100 outline-none bg-white"
+              />
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2 justify-center">
+            {serviceCategories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setFilter(cat)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition ${
+                  filter === cat ? 'bg-primary-600 text-white shadow-lg' : 'bg-white text-gray-700 hover:bg-primary-50'
+                }`}
+              >
+                {cat}
+              </button>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="section-padding bg-gradient-to-r from-primary-800 to-primary-950 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(11,192,148,0.2),transparent)]" />
-        <div className="container-custom mx-auto px-4 text-center relative">
-          <SectionReveal>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">Need a Custom Maintenance Contract?</h2>
-            <p className="text-primary-100 mb-6 md:mb-8 max-w-2xl mx-auto">
-              We tailor maintenance, IT, and manpower packages to your institution's exact requirements.
-            </p>
-            <Link to="/contact" className="px-6 md:px-8 py-3 md:py-4 bg-white text-primary-700 font-semibold rounded-full hover:shadow-2xl transition inline-flex items-center gap-2 group">
-              Request a Quote <FaArrowRight className="group-hover:translate-x-1 transition" />
-            </Link>
-          </SectionReveal>
+      <section className="section-padding">
+        <div className="container-custom mx-auto px-4">
+          {filtered.length === 0 ? (
+            <p className="text-center text-gray-500 py-20">No services found.</p>
+          ) : (
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((s) => (
+                <Link
+                  key={s.id}
+                  to={`/services/${s.id}`}
+                  className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all border border-gray-100"
+                >
+                  <div className="aspect-video overflow-hidden bg-gray-200 relative">
+                    <img src={s.image} alt={s.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" loading="lazy" />
+                    <span className="absolute top-3 left-3 px-3 py-1 bg-white/90 text-primary-800 text-xs font-semibold rounded-full">
+                      {s.category}
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-primary-950 mb-2 group-hover:text-primary-600 transition">{s.title}</h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">{s.description}</p>
+                    <span className="inline-flex items-center gap-2 text-primary-600 font-semibold text-sm group-hover:gap-3 transition-all">
+                      View Details <FaArrowRight />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
         </div>
       </section>
     </div>

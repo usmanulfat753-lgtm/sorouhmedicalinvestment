@@ -1,378 +1,291 @@
+// src/pages/Home.jsx
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { motion } from 'framer-motion'
-import { TypeAnimation } from 'react-type-animation'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
-  FaHospital, FaUniversity, FaNetworkWired, FaVideo, FaUsers, FaTools,
-  FaArrowRight, FaCheckCircle, FaStar, FaQuoteLeft, FaWrench, FaPlay, FaShieldAlt, FaClock, FaHeadset
+  FaArrowRight, FaCheckCircle, FaStar, FaQuoteLeft, FaPhone,
+  FaPlay, FaChevronLeft, FaChevronRight,
 } from 'react-icons/fa'
-import AnimatedBackground from '../components/AnimatedBackground'
-import SectionReveal from '../components/SectionReveal'
-import AnimatedCounter from '../components/AnimatedCounter'
-import TiltCard from '../components/TiltCard'
-import MarqueeBar from '../components/MarqueeBar'
-import MagneticButton from '../components/MagneticButton'
+import { servicesData, images } from '../data/services'
+
+const HERO_SLIDES = [
+  { image: images.hero[0], title: 'Hospital Equipment Repair', subtitle: 'Critical care device maintenance & calibration' },
+  { image: images.hero[1], title: 'Laboratory Analyzers', subtitle: 'Precision calibration & performance testing' },
+  { image: images.hero[2], title: 'Imaging Systems', subtitle: 'X-Ray, CT, and MRI equipment servicing' },
+  { image: images.hero[3], title: 'Dental Equipment', subtitle: 'Dental chair & delivery system maintenance' },
+  { image: images.hero[4], title: 'Biomedical Engineering', subtitle: 'Certified technicians repairing medical devices' },
+  { image: images.hero[5], title: 'IT & Network Systems', subtitle: 'Complete IT infrastructure & server maintenance' },
+]
+
+const GALLERY_IMAGES = [
+  { src: images.patientMonitor, label: 'Patient Monitors' },
+  { src: images.labEquipment, label: 'Lab Analyzers' },
+  { src: images.autoclave, label: 'Autoclaves' },
+  { src: images.dentalChair, label: 'Dental Chairs' },
+  { src: images.itNetwork, label: 'Network Systems' },
+  { src: images.microscope, label: 'Microscopes' },
+  { src: images.xrayMachine, label: 'X-Ray Machines' },
+  { src: images.mechanicalSystem, label: 'Mechanical Systems' },
+  { src: images.controlPanel, label: 'Control Panels' },
+  { src: images.calibration, label: 'Calibration Tools' },
+]
 
 const Home = () => {
-  const [services, setServices] = useState([])
+  const [currentSlide, setCurrentSlide] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const featuredServices = servicesData.slice(0, 6)
 
   useEffect(() => {
-    setServices([
-      { icon: FaHospital, title: 'Hospital Biomedical Maintenance', desc: 'Preventive & corrective maintenance for all hospital biomedical equipment.', color: 'from-blue-500 to-cyan-500' },
-      { icon: FaUniversity, title: 'University Equipment Service', desc: 'Scheduled maintenance & calibration for university lab devices.', color: 'from-purple-500 to-pink-500' },
-      { icon: FaNetworkWired, title: 'IT & Network Support', desc: 'Complete IT infrastructure support & 24/7 troubleshooting.', color: 'from-emerald-500 to-teal-500' },
-      { icon: FaVideo, title: 'Projector Repair', desc: 'Diagnostic & repair for multimedia projectors in lecture halls.', color: 'from-orange-500 to-red-500' },
-      { icon: FaUsers, title: 'Manpower Supply', desc: 'Qualified technical & administrative manpower on demand.', color: 'from-indigo-500 to-blue-500' },
-      { icon: FaTools, title: 'Technical Consulting', desc: 'Expert consultancy for equipment planning & lifecycle management.', color: 'from-pink-500 to-rose-500' },
-    ])
-  }, [])
+    if (isPaused) return
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
+    }, 1500)
+    return () => clearInterval(interval)
+  }, [isPaused])
 
-  const stats = [
-    { value: 50, suffix: '+', label: 'Hospitals & Universities' },
-    { value: 5000, suffix: '+', label: 'Devices Maintained' },
-    { value: 200, suffix: '+', label: 'Certified Engineers' },
-    { value: 15, suffix: '+', label: 'Years Experience' },
-  ]
-
-  const testimonials = [
-    { name: 'Dr. Ahmed Al-Rashid', role: 'Hospital Director', text: 'Sorouh Medical Investment keeps all our critical biomedical devices running smoothly. Their response time is unmatched.' },
-    { name: 'Prof. Sarah Mohammed', role: 'University Lab Director', text: 'Their team maintains our lab equipment with exceptional precision. A trusted partner for our university.' },
-    { name: 'Khalid Nasser', role: 'IT Manager', text: 'Reliable IT and network support, plus fast projector repair. Sorouh is our go-to technical partner.' },
-  ]
-
-  const features = [
-    { icon: FaShieldAlt, title: 'Certified Experts', desc: 'All engineers are certified and trained' },
-    { icon: FaClock, title: 'Fast Response', desc: '24/7 emergency breakdown support' },
-    { icon: FaHeadset, title: 'Dedicated Support', desc: 'Personal account manager for every client' },
-  ]
+  const nextSlide = () => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)
+  const prevSlide = () => setCurrentSlide((prev) => (prev - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)
 
   return (
-    <div className="overflow-hidden">
-      {/* HERO */}
-      <section className="relative overflow-hidden mesh-gradient">
-        <AnimatedBackground variant="primary" />
-        <div className="container-custom mx-auto px-4 section-padding relative">
-          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-sm font-semibold mb-6 text-primary-800"
-              >
-                <span className="w-2 h-2 rounded-full bg-accent-500 animate-pulse" />
-                <span className="hidden sm:inline">Biomedical • IT • Manpower</span>
-                <span className="sm:hidden">Trusted Partner</span>
-              </motion.span>
+    <div>
+      {/* HERO SLIDER */}
+      <section
+        className="relative min-h-[600px] md:min-h-[700px] overflow-hidden bg-primary-950"
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+      >
+        <AnimatePresence mode="sync">
+          <motion.div
+            key={currentSlide}
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.05 }}
+            transition={{ duration: 1.2, ease: 'easeInOut' }}
+            className="absolute inset-0"
+          >
+            <img src={HERO_SLIDES[currentSlide].image} alt={HERO_SLIDES[currentSlide].title} className="w-full h-full object-cover" />
+          </motion.div>
+        </AnimatePresence>
 
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-primary-950 leading-tight mb-4 md:mb-6">
-                Trusted Partner for{' '}
-                <span className="gradient-text">
-                  <TypeAnimation
-                    sequence={[
-                      'Biomedical Maintenance',
-                      2000,
-                      'IT & Network Support',
-                      2000,
-                      'Projector Repair',
-                      2000,
-                      'Manpower Supply',
-                      2000,
-                    ]}
-                    wrapper="span"
-                    speed={40}
-                    repeat={Infinity}
-                  />
-                </span>
-              </h1>
+        <div className="absolute inset-0 bg-gradient-to-r from-primary-950/95 via-primary-950/70 to-primary-950/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-primary-950/20" />
 
-              <p className="text-base md:text-lg text-gray-600 mb-6 md:mb-8 leading-relaxed max-w-xl">
-                Sorouh Medical Investment delivers expert maintenance for hospital and university biomedical equipment, complete IT support, projector repair, and professional manpower supply in Taif, Saudi Arabia.
-              </p>
+        <div className="container-custom mx-auto px-4 py-20 md:py-28 relative z-10">
+          <div className="max-w-3xl">
+            <motion.span initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-xl border border-white/20 rounded-full text-sm font-semibold text-white mb-6">
+              <span className="w-2 h-2 rounded-full bg-accent-400 animate-pulse" />
+              Biomedical • IT • Electrical • Calibration
+            </motion.span>
 
-              <div className="flex flex-wrap gap-3 md:gap-4">
-                <MagneticButton>
-                  <Link to="/services" className="btn-primary group">
-                    <span>Explore Services</span>
-                    <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                  </Link>
-                </MagneticButton>
-                <MagneticButton>
-                  <Link to="/contact" className="btn-secondary group">
-                    <FaPlay className="text-xs" />
-                    <span>Get a Quote</span>
-                  </Link>
-                </MagneticButton>
-              </div>
-
-              <div className="mt-8 md:mt-10 flex flex-wrap items-center gap-4 md:gap-6">
-                <div className="flex -space-x-3">
-                  {[1,2,3,4].map(i => (
-                    <motion.div
-                      key={i}
-                      whileHover={{ y: -4, scale: 1.1, zIndex: 10 }}
-                      className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-accent-400 border-2 border-white flex items-center justify-center text-white font-bold text-sm shadow-md"
-                    >
-                      {String.fromCharCode(64 + i)}
-                    </motion.div>
-                  ))}
-                </div>
-                <div>
-                  <div className="flex items-center gap-1 text-yellow-400 mb-1">
-                    {[1,2,3,4,5].map(i => <FaStar key={i} className="text-xs" />)}
-                  </div>
-                  <p className="text-xs md:text-sm text-gray-600">Trusted by 50+ institutions</p>
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-              className="relative"
-            >
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-primary-500/20 animate-float">
-                <img
-                  src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=800&auto=format&fit=crop"
-                  alt="Biomedical Engineering"
-                  className="w-full h-[350px] sm:h-[450px] md:h-[500px] object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary-950/70 via-transparent to-transparent" />
-                <div className="absolute bottom-4 left-4 right-4 glass-card rounded-xl p-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white">
-                      <FaShieldAlt />
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Uptime Guarantee</p>
-                      <p className="font-bold text-primary-950">99.9% Reliability</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <motion.div
-                animate={{ y: [0, -15, 0], rotate: [0, 5, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="absolute -top-4 -right-4 md:-top-6 md:-right-6 bg-white rounded-2xl p-3 md:p-4 shadow-xl"
-              >
-                <div className="text-center">
-                  <p className="text-2xl md:text-3xl font-bold gradient-text">
-                    <AnimatedCounter end={24} suffix="/7" />
-                  </p>
-                  <p className="text-[10px] md:text-xs text-gray-500 font-medium">Support</p>
-                </div>
+            <AnimatePresence mode="wait">
+              <motion.div key={currentSlide} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ duration: 0.5 }}>
+                <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-4">
+                  {HERO_SLIDES[currentSlide].title}
+                </h1>
+                <p className="text-lg md:text-2xl text-accent-200 mb-8 max-w-xl">
+                  {HERO_SLIDES[currentSlide].subtitle}
+                </p>
               </motion.div>
+            </AnimatePresence>
 
-              <motion.div
-                animate={{ y: [0, 15, 0], rotate: [0, -5, 0] }}
-                transition={{ duration: 5, repeat: Infinity }}
-                className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 bg-white rounded-2xl p-3 md:p-4 shadow-xl"
-              >
-                <div className="flex items-center gap-2">
-                  <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-accent-100 flex items-center justify-center text-accent-600">
-                    <FaCheckCircle />
+            <p className="text-base md:text-lg text-white/80 mb-8 max-w-xl leading-relaxed">
+              Sorouh Medical Investment keeps hospitals, universities, and clinics running with precision maintenance and rapid repair.
+            </p>
+
+            <div className="flex flex-wrap gap-3 md:gap-4 mb-8">
+              <Link to="/services" className="group inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-accent-500 to-accent-600 hover:from-accent-400 hover:to-accent-500 text-white font-semibold rounded-full shadow-2xl shadow-accent-500/30 transform hover:-translate-y-1 transition-all">
+                Explore Services <FaArrowRight className="group-hover:translate-x-1 transition" />
+              </Link>
+              <Link to="/contact" className="inline-flex items-center gap-2 px-6 py-3.5 bg-white/10 backdrop-blur-xl border-2 border-white/30 hover:bg-white/20 text-white font-semibold rounded-full transition-all">
+                <FaPlay className="text-xs" /> Get a Quote
+              </Link>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-6 text-white/90 text-sm">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-accent-400 border-2 border-white/60 flex items-center justify-center text-white font-bold text-xs">
+                    {String.fromCharCode(64 + i)}
                   </div>
-                  <div>
-                    <p className="text-xs md:text-sm font-bold text-primary-950">ISO Certified</p>
-                    <p className="text-[10px] md:text-xs text-gray-500">Quality Assured</p>
-                  </div>
+                ))}
+              </div>
+              <div>
+                <div className="flex items-center gap-1 text-yellow-400 mb-0.5">
+                  {[1, 2, 3, 4, 5].map((i) => <FaStar key={i} className="text-xs" />)}
                 </div>
-              </motion.div>
-            </motion.div>
+                <p className="text-white/80 text-xs">Trusted by 50+ institutions</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+          {HERO_SLIDES.map((_, i) => (
+            <button key={i} onClick={() => setCurrentSlide(i)} className={`h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'w-10 bg-accent-400' : 'w-2 bg-white/40 hover:bg-white/70'}`} />
+          ))}
+        </div>
+
+        <button onClick={prevSlide} className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 flex items-center justify-center text-white transition z-20"><FaChevronLeft /></button>
+        <button onClick={nextSlide} className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 hover:bg-white/20 flex items-center justify-center text-white transition z-20"><FaChevronRight /></button>
+      </section>
+
+      {/* GALLERY */}
+      <section className="py-12 md:py-16 bg-white border-b border-gray-100 overflow-hidden">
+        <div className="container-custom mx-auto px-4 mb-8">
+          <div className="text-center">
+            <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Equipment We Service</span>
+            <h2 className="text-2xl md:text-3xl font-bold text-primary-950 mt-2">Trusted <span className="gradient-text">Across Every Device</span></h2>
+          </div>
+        </div>
+        <div className="relative">
+          <div className="absolute left-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-20 md:w-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+          <div className="flex logo-marquee-track gap-4 md:gap-6">
+            {[...GALLERY_IMAGES, ...GALLERY_IMAGES].map((img, i) => (
+              <div key={i} className="group relative w-56 md:w-72 h-40 md:h-48 flex-shrink-0 rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all">
+                <img src={img.src} alt={img.label} loading="lazy" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-primary-950/80 via-transparent to-transparent" />
+                <div className="absolute bottom-3 left-3 right-3"><p className="text-white font-semibold text-sm md:text-base">{img.label}</p></div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* Marquee */}
-      <MarqueeBar />
-
       {/* STATS */}
-      <section className="py-16 md:py-24 bg-white relative overflow-hidden">
+      <section className="bg-white py-16 md:py-20">
         <div className="container-custom mx-auto px-4">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
-            {stats.map((stat, i) => (
-              <SectionReveal key={i} delay={i * 0.1}>
-                <div className="relative text-center p-6 md:p-8 rounded-2xl bg-gradient-to-br from-gray-50 to-white border border-gray-100 hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-accent-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition" />
-                  <p className="text-3xl md:text-5xl font-bold gradient-text mb-2 relative">
-                    <AnimatedCounter end={stat.value} suffix={stat.suffix} />
-                  </p>
-                  <p className="text-xs md:text-sm text-gray-600 font-medium relative">{stat.label}</p>
-                </div>
-              </SectionReveal>
+            {[
+              { v: '50+', l: 'Institutions' },
+              { v: '50,000+', l: 'Devices Maintained' },
+              { v: '200+', l: 'Certified Engineers' },
+              { v: '15+', l: 'Years Experience' },
+            ].map((s, i) => (
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center p-6 md:p-8 rounded-2xl bg-gradient-to-br from-primary-50 to-white border border-primary-100 hover:shadow-2xl hover:-translate-y-2 transition-all group">
+                <p className="text-3xl md:text-5xl font-bold gradient-text mb-2">{s.v}</p>
+                <p className="text-xs md:text-sm text-gray-600 font-medium">{s.l}</p>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
       {/* SERVICES */}
-      <section className="section-padding bg-gradient-to-b from-gray-50 to-white relative overflow-hidden">
-        <AnimatedBackground variant="secondary" />
-        <div className="container-custom mx-auto px-4 relative">
-          <SectionReveal>
-            <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-              <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">Our Services</span>
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-950 mt-3 mb-4">
-                Complete <span className="gradient-text">Technical Solutions</span>
-              </h2>
-              <p className="text-gray-600 text-base md:text-lg">
-                We keep hospitals, universities, and enterprises running with expert maintenance, IT support, and manpower.
-              </p>
-            </div>
-          </SectionReveal>
+      <section className="section-padding bg-gray-50">
+        <div className="container-custom mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+            <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Our Services</span>
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-primary-950 mt-3 mb-4">Complete <span className="gradient-text">Technical Solutions</span></h2>
+            <p className="text-gray-600 text-base md:text-lg">From X-ray machines to autoclaves — we maintain every device in your facility.</p>
+          </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
-            {services.map((service, i) => (
-              <SectionReveal key={i} delay={i * 0.08}>
-                <TiltCard>
-                  <div className="group relative bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 h-full overflow-hidden">
-                    <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.color} opacity-10 rounded-full blur-2xl group-hover:opacity-30 transition-opacity`} />
-                    <div className={`w-14 md:w-16 h-14 md:h-16 rounded-2xl bg-gradient-to-br ${service.color} flex items-center justify-center text-white text-xl md:text-2xl mb-5 md:mb-6 group-hover:scale-110 group-hover:rotate-6 transition-transform shadow-lg`}>
-                      <service.icon />
-                    </div>
-                    <h3 className="text-lg md:text-xl font-bold text-primary-950 mb-3">{service.title}</h3>
-                    <p className="text-sm md:text-base text-gray-600 mb-4 leading-relaxed">{service.desc}</p>
-                    <Link to="/services" className="inline-flex items-center gap-2 text-primary-600 font-semibold text-sm group-hover:gap-3 transition-all">
-                      Learn More <FaArrowRight />
-                    </Link>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredServices.map((s, i) => (
+              <motion.div key={s.id} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.08 }}>
+                <Link to={`/services/${s.id}`} className="group block bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100">
+                  <div className="aspect-video overflow-hidden bg-gray-200 relative">
+                    <img src={s.image} alt={s.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" loading="lazy" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-primary-950/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition" />
+                    <span className="absolute top-3 left-3 px-3 py-1 bg-white/90 backdrop-blur text-primary-800 text-xs font-semibold rounded-full">{s.category}</span>
                   </div>
-                </TiltCard>
-              </SectionReveal>
+                  <div className="p-5 md:p-6">
+                    <h3 className="text-lg font-bold text-primary-950 mb-2 group-hover:text-primary-600 transition">{s.title}</h3>
+                    <p className="text-sm text-gray-600 mb-4 line-clamp-2">{s.description}</p>
+                    <span className="inline-flex items-center gap-2 text-primary-600 font-semibold text-sm group-hover:gap-3 transition-all">Learn More <FaArrowRight /></span>
+                  </div>
+                </Link>
+              </motion.div>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* FEATURES STRIP */}
-      <section className="py-12 md:py-16 bg-primary-950 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(11,192,148,0.2),transparent)]" />
-        <div className="container-custom mx-auto px-4 relative">
-          <div className="grid md:grid-cols-3 gap-6">
-            {features.map((f, i) => (
-              <SectionReveal key={i} delay={i * 0.1}>
-                <div className="flex items-center gap-4 text-white p-4">
-                  <div className="w-12 h-12 rounded-xl bg-white/10 backdrop-blur flex items-center justify-center text-accent-400 text-xl flex-shrink-0">
-                    <f.icon />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-base md:text-lg">{f.title}</h3>
-                    <p className="text-sm text-primary-200">{f.desc}</p>
-                  </div>
-                </div>
-              </SectionReveal>
-            ))}
+          <div className="text-center mt-10 md:mt-14">
+            <Link to="/services" className="btn-primary group">
+              <span>View All {servicesData.length} Services</span>
+              <FaArrowRight className="group-hover:translate-x-1 transition" />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* WHY US */}
-      <section className="section-padding">
+      <section className="section-padding bg-white">
         <div className="container-custom mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-8 md:gap-12 items-center">
-            <SectionReveal direction="left">
-              <div className="relative">
-                <img
-                  src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=800&auto=format&fit=crop"
-                  alt="Technical Team"
-                  className="rounded-3xl shadow-2xl w-full h-[350px] md:h-[500px] object-cover"
-                />
-                <motion.div
-                  animate={{ y: [0, -10, 0] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                  className="absolute -bottom-6 -right-6 glass-card rounded-2xl p-4 md:p-5 shadow-2xl"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-lg">
-                      <FaStar />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-primary-950">
-                        <AnimatedCounter end={99} suffix="%" />
-                      </p>
-                      <p className="text-xs text-gray-500">Client Satisfaction</p>
-                    </div>
-                  </div>
-                </motion.div>
+            <motion.div initial={{ opacity: 0, x: -30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative">
+              <div className="rounded-3xl overflow-hidden shadow-2xl">
+                <img src={images.technicianWorking} alt="Technical Team" className="w-full h-[350px] md:h-[500px] object-cover" />
               </div>
-            </SectionReveal>
+              <motion.div animate={{ y: [0, -10, 0] }} transition={{ duration: 3, repeat: Infinity }} className="absolute -bottom-6 -right-6 glass-3d rounded-2xl p-4 md:p-5 shadow-2xl">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white text-lg"><FaStar /></div>
+                  <div><p className="text-2xl font-bold text-primary-950">99%</p><p className="text-xs text-gray-500">Client Satisfaction</p></div>
+                </div>
+              </motion.div>
+            </motion.div>
 
-            <SectionReveal direction="right" delay={0.15}>
-              <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">Why Choose Us</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-950 mt-3 mb-5 md:mb-6">
-                Reliability You Can <span className="gradient-text">Count On</span>
-              </h2>
-              <p className="text-gray-600 mb-6 md:mb-8 leading-relaxed">
-                With over 15 years of experience, we've built a reputation for keeping critical biomedical and IT systems operational when it matters most.
-              </p>
-              <div className="space-y-3 md:space-y-4">
-                {[
-                  'Certified biomedical engineers and IT specialists',
-                  'Rapid response and 24/7 emergency support',
-                  'Preventive maintenance contracts',
-                  'Genuine spare parts and calibration tools',
-                  'Flexible manpower supply on demand',
-                ].map((item, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className="flex items-start gap-3 group"
-                  >
-                    <div className="w-6 h-6 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0 mt-0.5 group-hover:bg-accent-500 transition">
-                      <FaCheckCircle className="text-accent-600 group-hover:text-white text-xs transition" />
-                    </div>
+            <motion.div initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }}>
+              <span className="text-primary-600 font-semibold text-sm uppercase tracking-wider">Why Choose Us</span>
+              <h2 className="text-3xl md:text-4xl font-bold text-primary-950 mt-3 mb-5">Reliability You Can <span className="gradient-text">Count On</span></h2>
+              <p className="text-gray-600 mb-6 leading-relaxed">With over 15 years of experience, we've built a reputation for keeping critical biomedical systems operational when it matters most.</p>
+              <div className="space-y-3">
+                {['Certified biomedical engineers', 'Rapid response and 24/7 emergency support', 'Preventive maintenance contracts', 'Genuine spare parts and calibration tools', 'ISO-traceable calibration certificates'].map((item, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <div className="w-6 h-6 rounded-full bg-accent-100 flex items-center justify-center flex-shrink-0 mt-0.5"><FaCheckCircle className="text-accent-600 text-xs" /></div>
                     <p className="text-gray-700 text-sm md:text-base">{item}</p>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
-              <Link to="/about" className="btn-primary mt-6 md:mt-8 group">
-                <span>Discover More</span>
-                <FaArrowRight className="group-hover:translate-x-1 transition" />
-              </Link>
-            </SectionReveal>
+              <Link to="/about" className="btn-primary mt-6 group"><span>Discover More</span><FaArrowRight className="group-hover:translate-x-1 transition" /></Link>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* TESTIMONIALS */}
-      <section className="section-padding bg-gradient-to-br from-primary-50 via-white to-accent-50 relative overflow-hidden">
-        <AnimatedBackground variant="primary" />
-        <div className="container-custom mx-auto px-4 relative">
-          <SectionReveal>
-            <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
-              <span className="text-accent-600 font-semibold text-sm uppercase tracking-wider">Testimonials</span>
-              <h2 className="text-3xl md:text-4xl font-bold text-primary-950 mt-3 mb-4">
-                What Our <span className="gradient-text">Clients Say</span>
-              </h2>
-            </div>
-          </SectionReveal>
+      {/* ═══════════════════════════════════════════════════════
+         TESTIMONIALS SECTION — Dark Blue Background (UPDATED)
+         ═══════════════════════════════════════════════════════ */}
+      <section className="section-padding bg-navy-950 relative overflow-hidden">
+        {/* Background glows */}
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-[120px] pointer-events-none" />
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-accent-500/10 rounded-full blur-[120px] pointer-events-none" />
+
+        <div className="container-custom mx-auto px-4 relative z-10">
+          <div className="text-center max-w-3xl mx-auto mb-12 md:mb-16">
+            <span className="text-accent-400 font-semibold text-sm uppercase tracking-wider">Testimonials</span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mt-3 mb-4">
+              What Our <span className="bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent">Clients Say</span>
+            </h2>
+          </div>
 
           <div className="grid md:grid-cols-3 gap-5 md:gap-6">
-            {testimonials.map((t, i) => (
-              <SectionReveal key={i} delay={i * 0.12}>
-                <div className="group bg-white rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 relative h-full border border-gray-100">
-                  <div className="absolute top-0 left-0 w-20 h-20 bg-gradient-to-br from-primary-500/10 to-accent-500/10 rounded-br-full" />
-                  <FaQuoteLeft className="text-accent-200 text-3xl md:text-4xl mb-4 relative" />
-                  <p className="text-gray-600 mb-6 leading-relaxed italic text-sm md:text-base relative">"{t.text}"</p>
-                  <div className="flex items-center gap-3 relative">
-                    <div className="w-11 h-11 md:w-12 md:h-12 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center text-white font-bold">
-                      {t.name.charAt(0)}
-                    </div>
-                    <div>
-                      <p className="font-bold text-primary-950 text-sm md:text-base">{t.name}</p>
-                      <p className="text-xs md:text-sm text-gray-500">{t.role}</p>
-                    </div>
+            {[
+              { name: 'Dr. Ahmed Al-Rashid', role: 'Hospital Director', text: 'Sorouh keeps all our X-ray and imaging equipment running flawlessly.' },
+              { name: 'Prof. Sarah Mohammed', role: 'University Lab Director', text: 'Their team calibrates our lab equipment with exceptional precision.' },
+              { name: 'Khalid Nasser', role: 'Dental Clinic Owner', text: 'Fast dental chair repairs and friendly service. Highly recommended.' },
+            ].map((t, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="bg-white/5 rounded-2xl p-6 md:p-8 shadow-lg border border-white/10 hover:border-white/20 hover:bg-white/10 transition-all duration-300"
+              >
+                <FaQuoteLeft className="text-primary-700 text-3xl mb-4" />
+                <p className="text-primary-100 mb-6 leading-relaxed italic text-sm md:text-base">
+                  "{t.text}"
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-full bg-primary-800 border border-primary-700 flex items-center justify-center text-white font-bold">
+                    {t.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p className="font-bold text-white text-sm md:text-base">{t.name}</p>
+                    <p className="text-xs md:text-sm text-primary-300">{t.role}</p>
                   </div>
                 </div>
-              </SectionReveal>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -380,35 +293,14 @@ const Home = () => {
 
       {/* CTA */}
       <section className="section-padding bg-gradient-to-br from-primary-800 via-primary-900 to-accent-900 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-20 pointer-events-none">
-          <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,white,transparent)]" />
-        </div>
+        <div className="absolute inset-0 opacity-20"><div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_30%_50%,white,transparent)]" /></div>
         <div className="container-custom mx-auto px-4 text-center relative">
-          <SectionReveal>
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="text-3xl md:text-5xl font-bold text-white mb-4 md:mb-6"
-            >
-              Need Maintenance or <span className="bg-gradient-to-r from-accent-300 to-white bg-clip-text text-transparent">Manpower Support?</span>
-            </motion.h2>
-            <p className="text-primary-100 text-base md:text-lg mb-6 md:mb-8 max-w-2xl mx-auto">
-              Get a fast quote for biomedical equipment maintenance, IT support, projector repair, or manpower supply in Taif, Saudi Arabia.
-            </p>
-            <div className="flex flex-wrap gap-3 md:gap-4 justify-center">
-              <MagneticButton>
-                <Link to="/contact" className="px-6 md:px-8 py-3 md:py-4 bg-white text-primary-700 font-semibold rounded-full hover:shadow-2xl transition flex items-center gap-2 group">
-                  Request a Quote <FaArrowRight className="group-hover:translate-x-1 transition" />
-                </Link>
-              </MagneticButton>
-              <MagneticButton>
-                <a href="tel:+966594946392" className="px-6 md:px-8 py-3 md:py-4 bg-transparent border-2 border-white/40 text-white font-semibold rounded-full hover:bg-white/10 transition">
-                  Call: +966 594946392
-                </a>
-              </MagneticButton>
-            </div>
-          </SectionReveal>
+          <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">Need Maintenance or <span className="bg-gradient-to-r from-accent-300 to-white bg-clip-text text-transparent">Technical Support?</span></h2>
+          <p className="text-primary-100 text-base md:text-lg mb-8 max-w-2xl mx-auto">Get a fast quote for any service — X-ray, CBC, autoclave, dental chairs, or lab equipment.</p>
+          <div className="flex flex-wrap gap-3 md:gap-4 justify-center">
+            <Link to="/contact" className="px-6 md:px-8 py-3 md:py-4 bg-white text-primary-700 font-semibold rounded-full hover:shadow-2xl transition inline-flex items-center gap-2 group">Request a Quote <FaArrowRight className="group-hover:translate-x-1 transition" /></Link>
+            <a href="tel:+966594946392" className="px-6 md:px-8 py-3 md:py-4 bg-transparent border-2 border-white/40 text-white font-semibold rounded-full hover:bg-white/10 transition"><FaPhone className="inline mr-2" /> +966 594946392</a>
+          </div>
         </div>
       </section>
     </div>

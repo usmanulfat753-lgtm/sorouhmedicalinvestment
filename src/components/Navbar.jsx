@@ -7,7 +7,7 @@ import {
   FaChevronDown, FaMapMarkerAlt, FaClock, FaGlobe, FaStar,
 } from 'react-icons/fa'
 import SearchBar from './SearchBar'
-import logo from '../assets/logo.png' // CHANGE TO .svg IF YOUR LOGO IS SVG
+import logo from '../assets/logo.jpg' // CHANGE TO .svg IF YOUR LOGO IS SVG
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)

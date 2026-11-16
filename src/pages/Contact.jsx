@@ -1,6 +1,6 @@
 // src/pages/Contact.jsx
 import { useState } from 'react'
-import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaCheckCircle, FaWhatsapp } from 'react-icons/fa'
+import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaClock, FaCheckCircle, FaWhatsapp, FaExternalLinkAlt } from 'react-icons/fa'
 
 const COUNTRY_CODES = [
   { code: 'SA', dial: '+966', flag: '🇸🇦', name: 'Saudi Arabia' },
@@ -72,7 +72,7 @@ const Contact = () => {
               { icon: FaMapMarkerAlt, title: 'Visit Us', lines: ['Taif City', 'Saudi Arabia'] },
               { icon: FaPhone, title: 'Call Us', lines: ['+966 594946392', '24/7 Support'] },
               { icon: FaWhatsapp, title: 'WhatsApp', lines: ['+966 594946392', 'Quick Response'] },
-              { icon: FaClock, title: 'Working Hours', lines: ['Sun-Thu: 8AM-5PM', 'Emergency: 24/7'] },
+              { icon: FaClock, title: 'Working Hours', lines: ['Sun-Thu: 8:30AM-5:30PM', 'Fri-Sat: Closed'] },
             ].map((item, i) => (
               <div key={i} className="bg-white/5 border border-white/10 rounded-2xl p-6 text-center hover:bg-white/10 transition-colors">
                 <div className="w-14 h-14 mx-auto rounded-xl bg-primary-900 flex items-center justify-center text-accent-400 text-xl mb-4 border border-primary-700">
@@ -164,18 +164,30 @@ const Contact = () => {
               )}
             </div>
 
-            {/* Map */}
-            <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10 h-[500px]">
+            {/* Map — Embeds your actual Google Maps location */}
+            <div className="rounded-3xl overflow-hidden shadow-2xl border border-white/10 h-[500px] relative group">
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d119169.66763170416!2d40.35469364921856!3d21.28575069395458!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c2064d6c5f4bdd%3A0x9e2f31e2c7d0a8bc!2sTaif%20Saudi%20Arabia!5e0!3m2!1sen!2ssa!4v1700000000000!5m2!1sen!2ssa"
+                title="Sorouh Medical Investment Est. Location"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3710.095671969524!2d40.3952784!3d21.2852191!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x15c2068ab9b0a4f7%3A0x8a3b6a8f7c5d2e1d!2sSorouh%20Medical%20Investment%20Est.!5e0!3m2!1sen!2ssa!4v1700000000000!5m2!1sen!2ssa"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
-                title="Location"
-                className="grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                referrerPolicy="no-referrer-when-downgrade"
+                className="grayscale opacity-80 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-500"
               />
+              {/* Overlay button to open actual Google Maps */}
+              <a
+                href="https://maps.app.goo.gl/UTGtLrbuKp91C9t1A"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="absolute bottom-4 right-4 px-4 py-2.5 bg-white text-primary-950 text-sm font-bold rounded-xl shadow-2xl hover:bg-accent-500 hover:text-white transition flex items-center gap-2 group/btn"
+              >
+                <FaMapMarkerAlt className="text-accent-600 group-hover/btn:text-white transition" />
+                Open in Google Maps
+                <FaExternalLinkAlt className="text-xs" />
+              </a>
             </div>
           </div>
         </div>
